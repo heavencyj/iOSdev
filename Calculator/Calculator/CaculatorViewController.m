@@ -111,17 +111,6 @@ _userIsInTheMiddleOfEnteringANumber;
   }
 }
 
-/*
- if ([self.display.text length] > 1)
- self.display.text = [self.display.text 
- substringToIndex:[self.display.text length]-1];
- else {
- // If it's the last digit, display 0 instead of nothing
- self.display.text = @"0";
- self.userIsInTheMiddleOfEnteringANumber = NO;
- }
- */
-
 - (IBAction)testPressed:(UIButton *)sender {
   if ([[sender currentTitle] isEqualToString:@"test1"]) {
     self.testVariables = [NSDictionary dictionaryWithObjectsAndKeys:@"1",@"x",@"2.5",@"y", nil];

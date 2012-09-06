@@ -11,11 +11,12 @@
 @interface  CaculatorBrain()
 @property (nonatomic, strong) NSMutableArray *programStack;
 +(BOOL)isOperation:(NSString *)string;
+@property (nonatomic) BOOL hasHighOrder;
 @end
 
 @implementation CaculatorBrain
 @synthesize programStack = _programStack;
-
+@synthesize hasHighOrder = _hasHighOrder;
 
 - (NSMutableArray *)programStack
 {
@@ -65,6 +66,11 @@
 
 + (NSString *)descriptionOfTopOfStack:(NSMutableArray *)stack
 {
+  return [self descriptionOfTopOfStack:stack needParenthesis:NO];
+}
+
++ (NSString *)descriptionOfTopOfStack:(NSMutableArray *)stack needParenthesis:(BOOL)need
+{
   
   NSString *result=@"";
   id topOfStack = [stack lastObject];
@@ -79,10 +85,18 @@
     else {
       NSString *operation = topOfStack;
       if ([self numberOfOperands:operation] == 1) {
-        result = [[[operation stringByAppendingString:@"("] stringByAppendingString:[self descriptionOfTopOfStack:stack]] stringByAppendingString:@")"];
-      } else if ([self numberOfOperands:operation] == 2) {
-        NSString *op2 = [self descriptionOfTopOfStack:stack];
-        result = [[[[@"(" stringByAppendingString:[self descriptionOfTopOfStack:stack]] stringByAppendingString:operation] stringByAppendingString:op2] stringByAppendingString:@")"];
+        result = [[[operation stringByAppendingString:@"("] stringByAppendingString:[self descriptionOfTopOfStack:stack needParenthesis:NO]] stringByAppendingString:@")"];
+      } else if ([self numberOfOperands:operation] == 2) { 
+        if ([operation isEqualToString:@"*"] ||[operation isEqualToString:@"/"] ) {
+          NSString *op2 = [self descriptionOfTopOfStack:stack needParenthesis:YES];
+          result = [[[self descriptionOfTopOfStack:stack needParenthesis:YES] stringByAppendingString:operation] stringByAppendingString:op2];
+        } else if (need){
+          NSString *op2 = [self descriptionOfTopOfStack:stack needParenthesis:NO];
+          result = [[[[@"(" stringByAppendingString:[self descriptionOfTopOfStack:stack needParenthesis:NO]] stringByAppendingString:operation] stringByAppendingString:op2] stringByAppendingString:@")"];
+        } else {
+          NSString *op2 = [self descriptionOfTopOfStack:stack needParenthesis:NO];
+         result = [[[self descriptionOfTopOfStack:stack needParenthesis:NO] stringByAppendingString:operation] stringByAppendingString:op2];
+        }
       } else if ([self numberOfOperands:operation] == 0) {
         result = operation;
       } 
@@ -90,6 +104,7 @@
   }  
   return result;
 }
+
 
 + (double)numberOfOperands: (NSString *)operation {
   
