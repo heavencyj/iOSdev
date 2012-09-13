@@ -12,9 +12,9 @@
 @interface CaculatorViewController() 
 @property (nonatomic) BOOL userIsInTheMiddleOfEnteringANumber;
 @property (nonatomic) BOOL hasDot;
-@property (nonatomic) BOOL isVariable;
 @property (nonatomic, strong) CaculatorBrain *brain;
 @property (nonatomic, strong) NSDictionary *testVariables;
+-(void) updateDisplay;
 @end
 
 @implementation CaculatorViewController
@@ -26,7 +26,6 @@ _userIsInTheMiddleOfEnteringANumber;
 @synthesize hasDot = _hasDot;
 @synthesize brain = _brain;
 @synthesize testVariables = _testVariables;
-@synthesize isVariable = _isVariable;
 
 -(CaculatorBrain *)brain 
 {
@@ -37,12 +36,13 @@ _userIsInTheMiddleOfEnteringANumber;
 - (IBAction)digitPressed:(UIButton *)sender {
   NSString *digit = sender.currentTitle;
   if (self.userIsInTheMiddleOfEnteringANumber) {
-    self.display.text = [self.display.text 
+    if ([self.display.text isEqualToString:@"0"]) 
+      self.display.text = digit;
+    else
+      self.display.text = [self.display.text 
                          stringByAppendingString:digit];
   } else {
-    if ([digit doubleValue]) {
-      self.userIsInTheMiddleOfEnteringANumber = YES;
-    }
+    self.userIsInTheMiddleOfEnteringANumber = YES;
     self.display.text = digit;
   }
 }
@@ -58,24 +58,21 @@ _userIsInTheMiddleOfEnteringANumber;
 
 - (IBAction)enterPressed 
 {  
-  if (!self.isVariable)
+  if (self.userIsInTheMiddleOfEnteringANumber)
     [self.brain pushToProgram:[NSNumber numberWithDouble:[self.display.text doubleValue]]];
   // Show all the input in history label
+  else [self.brain pushToProgram:@"enter"];
   self.history.text = [[self.brain class] descriptionOfProgram:self.brain.program];
   // Clear out the flags
   self.userIsInTheMiddleOfEnteringANumber = NO;
   self.hasDot = NO;
-  self.isVariable = NO;
 }
 
 - (IBAction)operationPressed:(UIButton *)sender 
 {
   if (self.userIsInTheMiddleOfEnteringANumber) [self enterPressed];
   [self.brain pushToProgram:sender.currentTitle];
-  double result = [[self.brain class] runProgram:self.brain.program usingVariableVaules:self.testVariables];
-  self.history.text = [[self.brain class] descriptionOfProgram:self.brain.program];
-  NSString *resultString = [NSString stringWithFormat:@"%g",result];
-  self.display.text = resultString;  
+  [self updateDisplay];
 }
 
 - (IBAction)dotPressed:(UIButton *)sender {
@@ -99,9 +96,7 @@ _userIsInTheMiddleOfEnteringANumber;
     
     else {
       // If it's the last digit, display 0 instead of nothing
-      double result = [[self.brain class] runProgram:self.brain.program usingVariableVaules:self.testVariables];
-      NSString *resultString = [NSString stringWithFormat:@"%g",result];
-      self.display.text = resultString;
+      [self updateDisplay];
       self.userIsInTheMiddleOfEnteringANumber = NO;
     }
   }
@@ -115,7 +110,7 @@ _userIsInTheMiddleOfEnteringANumber;
   if ([[sender currentTitle] isEqualToString:@"test1"]) {
     self.testVariables = [NSDictionary dictionaryWithObjectsAndKeys:@"1",@"x",@"2.5",@"y", nil];
   } else if ([[sender currentTitle] isEqualToString:@"test2"]){
-    self.testVariables = [NSDictionary dictionaryWithObjectsAndKeys:@"1",@"x", @"0",@"z", nil];
+    self.testVariables = [NSDictionary dictionaryWithObjectsAndKeys:@"7",@"x", @"0",@"z", nil];
   } else if ([[sender currentTitle] isEqualToString:@"test3"]) {
     self.testVariables = [NSDictionary dictionaryWithObjectsAndKeys:@"-2",@"y",@"-5.5",@"z", @"3", @"x", nil];
   }
@@ -123,16 +118,29 @@ _userIsInTheMiddleOfEnteringANumber;
   for (NSString *variable in self.testVariables) {
     self.variables.text = [[[[self.variables.text stringByAppendingString:variable] stringByAppendingString:@" = "] stringByAppendingString:[self.testVariables objectForKey:variable]] stringByAppendingString:@"  "];
   }
-  double result = [[self.brain class] runProgram:self.brain.program usingVariableVaules:self.testVariables];
-  NSString *resultString = [NSString stringWithFormat:@"%g",result];
-  self.display.text = resultString;  
+  [self updateDisplay];
 }
 
 - (IBAction)variablePressed:(UIButton *)sender {
+  if (self.userIsInTheMiddleOfEnteringANumber) {
+    [self.brain pushToProgram:self.display.text];
+  }
   self.display.text = [self.testVariables valueForKey:[sender currentTitle]];
   [self.brain pushToProgram:[sender currentTitle]];
-  self.isVariable = YES;
-  [self enterPressed];
+  [self updateDisplay];
+  self.userIsInTheMiddleOfEnteringANumber = NO;
+}
+
+-(void)updateDisplay
+{
+  id result = [CaculatorBrain runProgram:self.brain.program usingVariableVaules:self.testVariables];
+  self.history.text = [CaculatorBrain descriptionOfProgram:self.brain.program];
+  NSString *resultString = nil;
+  if ([result isKindOfClass:[NSNumber class]])
+    resultString = [NSString stringWithFormat:@"%g",[result doubleValue]];
+  else if ([result isKindOfClass:[NSString class]])
+    resultString = result;
+  self.display.text = resultString;
 }
 
 - (void)viewDidUnload {
