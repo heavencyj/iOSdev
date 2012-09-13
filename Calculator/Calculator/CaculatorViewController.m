@@ -20,7 +20,6 @@
 @implementation CaculatorViewController
 @synthesize display = _display;
 @synthesize history = _history;
-@synthesize variables = _variables;
 @synthesize userIsInTheMiddleOfEnteringANumber = 
 _userIsInTheMiddleOfEnteringANumber;
 @synthesize hasDot = _hasDot;
@@ -106,20 +105,6 @@ _userIsInTheMiddleOfEnteringANumber;
   }
 }
 
-- (IBAction)testPressed:(UIButton *)sender {
-  if ([[sender currentTitle] isEqualToString:@"test1"]) {
-    self.testVariables = [NSDictionary dictionaryWithObjectsAndKeys:@"1",@"x",@"2.5",@"y", nil];
-  } else if ([[sender currentTitle] isEqualToString:@"test2"]){
-    self.testVariables = [NSDictionary dictionaryWithObjectsAndKeys:@"7",@"x", @"0",@"z", nil];
-  } else if ([[sender currentTitle] isEqualToString:@"test3"]) {
-    self.testVariables = [NSDictionary dictionaryWithObjectsAndKeys:@"-2",@"y",@"-5.5",@"z", @"3", @"x", nil];
-  }
-  self.variables.text = @"";
-  for (NSString *variable in self.testVariables) {
-    self.variables.text = [[[[self.variables.text stringByAppendingString:variable] stringByAppendingString:@" = "] stringByAppendingString:[self.testVariables objectForKey:variable]] stringByAppendingString:@"  "];
-  }
-  [self updateDisplay];
-}
 
 - (IBAction)variablePressed:(UIButton *)sender {
   if (self.userIsInTheMiddleOfEnteringANumber) {
@@ -144,7 +129,6 @@ _userIsInTheMiddleOfEnteringANumber;
 }
 
 - (void)viewDidUnload {
-  [self setVariables:nil];
   [super viewDidUnload];
 }
 @end
