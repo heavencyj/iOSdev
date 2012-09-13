@@ -128,6 +128,12 @@ _userIsInTheMiddleOfEnteringANumber;
   self.display.text = resultString;
 }
 
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+  if ([segue.identifier isEqualToString:@"graph"]) {
+    
+  }
+}
+
 - (void)viewDidUnload {
   [super viewDidUnload];
 }
