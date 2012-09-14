@@ -9,6 +9,7 @@
 #import "CaculatorViewController.h"
 #import "CaculatorBrain.h"
 #import "GraphView.h"
+#import "GraphViewController.h"
 
 @interface CaculatorViewController() <GraphViewDataSource>
 @property (nonatomic) BOOL userIsInTheMiddleOfEnteringANumber;
@@ -131,7 +132,8 @@ _userIsInTheMiddleOfEnteringANumber;
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
   if ([segue.identifier isEqualToString:@"graph"]) {
-    
+    [segue.destinationViewController setGraphViewDataSource:self];
+    [segue.destinationViewController setTitle:[@"y = " stringByAppendingString:self.history.text]];
   }
 }
 

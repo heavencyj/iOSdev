@@ -14,6 +14,7 @@
 @synthesize dataSource = _dataSource;
 @synthesize scale = _scale;
 @synthesize origin = _origin;
+@synthesize midPoint = _midPoint;
 
 - (void)setup
 {
@@ -21,6 +22,7 @@
   CGPoint midPoint; //center in coordinate system
   midPoint.x = self.bounds.origin.x + self.bounds.size.width/2;
   midPoint.y = self.bounds.origin.y + self.bounds.size.height/2;
+  self.midPoint = midPoint;
   self.origin = midPoint;
 }
 
@@ -93,7 +95,6 @@
   [[UIColor whiteColor] set];
   [AxesDrawer drawAxesInRect:axesRect originAtPoint:self.origin scale:self.scale];
   
-  
 	UIGraphicsPushContext(context);
   
   //Set Drawing Options
@@ -108,40 +109,40 @@
   for (CGFloat pixel = 0; pixel < self.bounds.size.width; pixel++) { //Iterate over each pixel left to right, iOS coordinat system
     
     
-    //CGFloat xPixelsFromCartesianOrigin = pixel-midPoint.x; //Distance from center to edge of screen
-    //CGFloat x = xPixelsFromCartesianOrigin / [self scale];     //xValue in Units
+    CGFloat xPixelsFromCartesianOrigin = pixel-self.origin.x; //Distance from center to edge of screen
+    CGFloat x = xPixelsFromCartesianOrigin / [self scale];     //xValue in Units
     
-    //CGFloat y = [self.dataSource valueForExpressionAtX:x];  //Delegate calculates y-Value in units given x-Value in units
-    CGFloat y = 10;
+    CGFloat y = [self.dataSource valueForExpressionAtX:x];  //Delegate calculates y-Value in units given x-Value in units
+    //CGFloat y = 10;
     CGFloat yPixelsFromCartesianOrigin = y * [self scale];
     
     //If this is the first iteration through the loop, move to point to begin drawing.
     if (haveMovedToPoint == NO)
     {
-      CGContextMoveToPoint(context, 0, (self.bounds.size.height/2)-yPixelsFromCartesianOrigin);
+      CGContextMoveToPoint(context, 0, self.origin.y-yPixelsFromCartesianOrigin);
       haveMovedToPoint = YES;
     }
-    CGContextAddLineToPoint(context, pixel, (self.bounds.size.height/2)-yPixelsFromCartesianOrigin);
+    CGContextAddLineToPoint(context, pixel, self.origin.y-yPixelsFromCartesianOrigin);
   }
   
   CGContextStrokePath(context);
 	UIGraphicsPopContext();
 }
 
--(void)resetOrigin: (CGPoint)center
+-(void)resetOrigin
 {
-  CGFloat distX = self.origin.x - center.x;
-  CGFloat distY = self.origin.y - center.y;
+  CGFloat distX = self.origin.x - self.midPoint.x;
+  CGFloat distY = self.origin.y - self.midPoint.y;
   
   CGPoint newCenter; //center in coordinate system
   newCenter.x = self.bounds.origin.x + self.bounds.size.width/2;
   newCenter.y = self.bounds.origin.y + self.bounds.size.height/2;
-
+  self.midPoint = newCenter;
+  
   CGPoint newOrigin;
   newOrigin.x = newCenter.x + distX;
   newOrigin.y = newCenter.y + distY;
   
-  self.origin = newOrigin;
-  
+  self.origin = newOrigin;  
 }
 @end

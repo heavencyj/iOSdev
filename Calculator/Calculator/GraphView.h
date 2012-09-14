@@ -18,8 +18,10 @@
 - (void)pinch:(UIPinchGestureRecognizer *)gesture;
 - (void)pan:(UIPanGestureRecognizer *)gesture;
 - (void)tripleTapping:(UITapGestureRecognizer *)gesture;
+- (void)resetOrigin;
 @property (nonatomic) CGFloat scale;
 @property (nonatomic) CGPoint origin;
+@property (nonatomic) CGPoint midPoint;
 // set this property to whatever object will provide this View's data
 // usually a Controller using a GraphView in its View
 @property (nonatomic, weak) IBOutlet id <GraphViewDataSource> dataSource;
