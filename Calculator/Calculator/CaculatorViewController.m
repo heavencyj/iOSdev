@@ -8,8 +8,9 @@
 
 #import "CaculatorViewController.h"
 #import "CaculatorBrain.h"
+#import "GraphView.h"
 
-@interface CaculatorViewController() 
+@interface CaculatorViewController() <GraphViewDataSource>
 @property (nonatomic) BOOL userIsInTheMiddleOfEnteringANumber;
 @property (nonatomic) BOOL hasDot;
 @property (nonatomic, strong) CaculatorBrain *brain;
@@ -132,6 +133,10 @@ _userIsInTheMiddleOfEnteringANumber;
   if ([segue.identifier isEqualToString:@"graph"]) {
     
   }
+}
+
+-(CGFloat)valueForExpressionAtX:(CGFloat)x {
+  return [[CaculatorBrain runProgram:self.brain.program usingVariableVaules:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:x] forKey:@"x"]] doubleValue];
 }
 
 - (void)viewDidUnload {

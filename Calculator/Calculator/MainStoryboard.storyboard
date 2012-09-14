@@ -458,6 +458,9 @@
                         <color key="backgroundColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
                     </view>
                     <navigationItem key="navigationItem" title="Graph" id="Pj6-zh-01U"/>
+                    <connections>
+                        <outlet property="graphView" destination="yhg-c9-mXe" id="GUT-hl-T5C"/>
+                    </connections>
                 </viewController>
             </objects>
             <point key="canvasLocation" x="647" y="766"/>
@@ -486,6 +489,9 @@
         </class>
         <class className="GraphViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/GraphViewController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="graphView" candidateClass="GraphView"/>
+            </relationships>
         </class>
     </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
