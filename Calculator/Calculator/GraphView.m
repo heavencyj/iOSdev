@@ -69,8 +69,11 @@
 }
 
 - (void)pan:(UIPanGestureRecognizer *)gesture {
-  
+  CGPoint translation = [gesture translationInView:self];
+  gesture.view.center = CGPointMake(gesture.view.center.x + translation.x, gesture.view.center.y + translation.y);
+  [gesture setTranslation:CGPointMake(0, 0) inView:self];
 }
+
 - (void)tripleTapping:(UITapGestureRecognizer *)gesture {
   if (gesture.state == UIGestureRecognizerStateEnded) {
     self.origin = [gesture locationInView:self];
