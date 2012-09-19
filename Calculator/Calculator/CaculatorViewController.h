@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CaculatorViewController : UIViewController
+@interface CaculatorViewController : UIViewController <UISplitViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *display;
 @property (weak, nonatomic) IBOutlet UILabel *history;
@@ -19,6 +19,7 @@
 - (IBAction)dotPressed:(UIButton *)sender;
 - (IBAction)undoPressed:(UIButton *)sender;
 - (IBAction)variablePressed:(UIButton *)sender;
+- (IBAction)graphPressed;
 
 
 @end

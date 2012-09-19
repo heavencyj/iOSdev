@@ -11,11 +11,24 @@
 @interface GraphViewController () 
 @property (nonatomic, weak) IBOutlet GraphView *graphView;
 @property (nonatomic, weak) IBOutlet id<GraphViewDataSource> dataSource;
+@property (nonatomic, weak) IBOutlet UIToolbar *toolbar;
 @end
 
 @implementation GraphViewController
 @synthesize graphView = _graphView;
 @synthesize dataSource = _dataSource;
+@synthesize splitViewBarButtonItem = _splitViewBarButtonItem;
+@synthesize toolbar = _toolbar;
+
+- (void)setSplitViewBarButtonItem:(UIBarButtonItem *)splitViewBarButtonItem {
+  if (_splitViewBarButtonItem != splitViewBarButtonItem) {
+    NSMutableArray *toolbarItems = [self.toolbar.items mutableCopy];
+    if (_splitViewBarButtonItem) [toolbarItems removeObject:_splitViewBarButtonItem];
+    if (splitViewBarButtonItem) [toolbarItems insertObject:splitViewBarButtonItem atIndex:0];
+    self.toolbar.items = toolbarItems;
+    _splitViewBarButtonItem = splitViewBarButtonItem;
+  }
+}
 
 // Set graph view and add guestures
 -(void)setGraphView:(GraphView *)graphView {
@@ -42,6 +55,10 @@
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
   [self.graphView resetOrigin];
+}
+
+-(void)drawGraph {
+  [self.graphView setNeedsDisplay];
 }
 
 @end
