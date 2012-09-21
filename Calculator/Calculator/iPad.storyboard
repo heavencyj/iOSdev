@@ -15,16 +15,14 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" id="D1J-eM-3bu" customClass="GraphView">
-                                <rect key="frame" x="0.0" y="44" width="768" height="960"/>
+                                <rect key="frame" x="0.0" y="0.0" width="768" height="1004"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
                             </view>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="y59-WG-dX3">
-                                <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
+                                <rect key="frame" x="0.0" y="-1" width="768" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <items>
-                                    <barButtonItem title="Item" id="feU-RR-ben"/>
-                                </items>
+                                <items/>
                             </toolbar>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
@@ -32,25 +30,31 @@
                     <toolbarItems/>
                     <connections>
                         <outlet property="graphView" destination="D1J-eM-3bu" id="GRI-eL-gCr"/>
+                        <outlet property="toolbar" destination="y59-WG-dX3" id="MPa-VS-9XD"/>
                     </connections>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="1303" y="-374"/>
+            <point key="canvasLocation" x="1203" y="-436"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="BTN-wR-OID">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W3q-Je-G1S" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController id="b7u-ks-AgP" sceneMemberID="viewController">
+                    <value key="contentSizeForViewInPopover" type="size" width="320" height="788"/>
                     <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="Ne3-XV-8Cp">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="EJq-97-WA2">
+                        <rect key="frame" x="0.0" y="960" width="768" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="03S-x2-P1f" kind="relationship" relationship="rootViewController" id="Lly-Kg-K9a"/>
                     </connections>
                 </navigationController>
             </objects>
-            <point key="canvasLocation" x="1271" y="-1575"/>
+            <point key="canvasLocation" x="1263" y="-1575"/>
         </scene>
         <!--Split View Controller-->
         <scene sceneID="4nF-B7-pfS">
@@ -468,6 +472,7 @@
                         <color key="backgroundColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
                     </view>
                     <navigationItem key="navigationItem" title="Calculator" id="adY-gB-XFm"/>
+                    <value key="contentSizeForViewInPopover" type="size" width="320" height="788"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
                     <connections>
                         <outlet property="display" destination="Rdf-UC-k5R" id="qs6-zO-HQZ"/>
@@ -505,6 +510,7 @@
             <relationships>
                 <relationship kind="outlet" name="dataSource"/>
                 <relationship kind="outlet" name="graphView" candidateClass="GraphView"/>
+                <relationship kind="outlet" name="toolbar" candidateClass="UIToolbar"/>
             </relationships>
         </class>
     </classes>

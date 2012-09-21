@@ -36,9 +36,9 @@
     stack = [program mutableCopy];
   }
   NSString *result=[self descriptionOfTopOfStack:stack];
-  while ([stack lastObject]) {
-    result = [[result stringByAppendingString:@", "] stringByAppendingString:[self descriptionOfTopOfStack:stack]];
-  }
+//  while ([stack lastObject]) {
+//    result = [[result stringByAppendingString:@", "] stringByAppendingString:[self descriptionOfTopOfStack:stack]];
+//  }
   return result;
 }
 
@@ -212,6 +212,8 @@
   return [self popOperandOffProgramStack:stack];
 
 }
+
+
 
 + (NSSet *)variablesUsedInProgram:(id)program {
   

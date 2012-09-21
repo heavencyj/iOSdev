@@ -138,8 +138,6 @@ _userIsInTheMiddleOfEnteringANumber;
   else {
     [self performSegueWithIdentifier:@"graph" sender:self];
   }
-  
-  
 }
 
 -(void)updateDisplay
@@ -165,36 +163,47 @@ _userIsInTheMiddleOfEnteringANumber;
   return [[CaculatorBrain runProgram:self.brain.program usingVariableVaules:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:x] forKey:@"x"]] doubleValue];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+- (void)awakeFromNib  // always try to be the split view's delegate
 {
-  return YES;
-}
-
-- (void)awakeFromNib {
   [super awakeFromNib];
   self.splitViewController.delegate = self;
 }
 
-- (BOOL) splitViewController:(UISplitViewController *)svc shouldHideViewController:(UIViewController *)vc inOrientation:(UIInterfaceOrientation)orientation {
+- (id <SplitViewBarButtonItemPresenter>)splitViewBarButtonItemPresenter
+{
+  id detailVC = [self.splitViewController.viewControllers lastObject];
+  if (![detailVC conformsToProtocol:@protocol(SplitViewBarButtonItemPresenter)]) {
+    detailVC = nil;
+  }
+  return detailVC;
+}
+
+- (BOOL)splitViewController:(UISplitViewController *)svc
+   shouldHideViewController:(UIViewController *)vc
+              inOrientation:(UIInterfaceOrientation)orientation
+{
   return [self splitViewBarButtonItemPresenter] ? UIInterfaceOrientationIsPortrait(orientation) : NO;
 }
 
-- (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc {
-  barButtonItem.title = self.title;
+- (void)splitViewController:(UISplitViewController *)svc
+     willHideViewController:(UIViewController *)aViewController
+          withBarButtonItem:(UIBarButtonItem *)barButtonItem
+       forPopoverController:(UIPopoverController *)pc
+{
+  barButtonItem.title = @"Calculator";
   [self splitViewBarButtonItemPresenter].splitViewBarButtonItem = barButtonItem;
 }
 
-- (void)splitViewController:(UISplitViewController *)svc willShowViewController:(UIViewController *)aViewController invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem {
+- (void)splitViewController:(UISplitViewController *)svc
+     willShowViewController:(UIViewController *)aViewController
+  invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
+{
   [self splitViewBarButtonItemPresenter].splitViewBarButtonItem = nil;
-  
 }
 
-- (id <SplitViewBarButtonItemPresenter>)splitViewBarButtonItemPresenter {
-  id detailVC = [self.splitViewController.viewControllers lastObject];
-  if ([detailVC conformsToProtocol:@protocol(SplitViewBarButtonItemPresenter)]){
-      detailVC = nil;
-  }
-  return detailVC;
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+  return YES;
 }
 
 @end

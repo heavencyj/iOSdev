@@ -34,7 +34,6 @@
 -(void)setGraphView:(GraphView *)graphView {
   _graphView = graphView;
   self.graphView.dataSource = self.dataSource;
-  
   // Add gestures
   [self.graphView addGestureRecognizer:[[UIPinchGestureRecognizer alloc] initWithTarget:self.graphView action:@selector(pinch:)]];
   UITapGestureRecognizer* tripleTapRecoginizer = [[UITapGestureRecognizer alloc] initWithTarget:self.graphView action:@selector(tripleTapping:)];
@@ -45,7 +44,8 @@
 
 // Set the graphview delegate to 
 -(void)setGraphViewDataSource:(id<GraphViewDataSource>)dataSource {
-   self.dataSource = dataSource;
+  self.dataSource = dataSource;
+  self.graphView.dataSource = self.dataSource;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

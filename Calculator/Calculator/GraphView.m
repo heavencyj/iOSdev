@@ -19,15 +19,28 @@
 - (void)setup
 {
   self.contentMode = UIViewContentModeRedraw; // if our bounds changes, redraw ourselves
-  CGPoint midPoint; //center in coordinate system
-  midPoint.x = self.bounds.origin.x + self.bounds.size.width/2;
-  midPoint.y = self.bounds.origin.y + self.bounds.size.height/2;
-  self.midPoint = midPoint;
-  self.origin = midPoint;
+  NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+  CGFloat x = [pref floatForKey:@"originX"];
+  CGFloat y = [pref floatForKey:@"originY"];
+  CGFloat scale = [pref floatForKey:@"scale"];
+  
+  // if pref is not set
+  if ( x == 0 && y==0 && scale==0) {
+      CGPoint midPoint; //center in coordinate system
+      midPoint.x = self.bounds.origin.x + self.bounds.size.width/2;
+      midPoint.y = self.bounds.origin.y + self.bounds.size.height/2;
+      self.midPoint = midPoint;
+      self.origin = midPoint;
+  }
+  else {
+    self.origin = CGPointMake(x, y);
+    self.scale = scale;
+  }
 }
 
 - (void)awakeFromNib
 {
+  [super awakeFromNib];
   [self setup]; // get initialized when we come out of a storyboard
 }
 
@@ -65,18 +78,26 @@
       (gesture.state == UIGestureRecognizerStateEnded)) {
     self.scale *= gesture.scale; // adjust our scale
     gesture.scale = 1;           // reset gestures scale to 1 (so future changes are incremental, not cumulative)
+    [self saveDefultsOrigin:self.origin orScale:self.scale];
   }
 }
 
 - (void)pan:(UIPanGestureRecognizer *)gesture {
-  CGPoint translation = [gesture translationInView:self];
-  gesture.view.center = CGPointMake(gesture.view.center.x + translation.x, gesture.view.center.y + translation.y);
-  [gesture setTranslation:CGPointMake(0, 0) inView:self];
+  
+  if ((gesture.state == UIGestureRecognizerStateChanged) || (gesture.state == UIGestureRecognizerStateEnded)) {
+    
+    CGPoint translation = [gesture translationInView:self];
+    self.origin = CGPointMake(self.origin.x + translation.x, self.origin.y + translation.y);
+    [self setNeedsDisplay];
+    [gesture setTranslation:CGPointMake(0, 0) inView:self];
+    [self saveDefultsOrigin:self.origin orScale:self.scale];
+  }
 }
 
 - (void)tripleTapping:(UITapGestureRecognizer *)gesture {
   if (gesture.state == UIGestureRecognizerStateEnded) {
     self.origin = [gesture locationInView:self];
+    [self saveDefultsOrigin:self.origin orScale:self.scale];
   }
 }
 
@@ -88,6 +109,15 @@
     [self setNeedsDisplay];
   }
 }
+
+-(void)saveDefultsOrigin:(CGPoint)origin orScale:(CGFloat)scale {
+  NSUserDefaults *pref = [NSUserDefaults standardUserDefaults];
+  [pref setFloat:scale forKey:@"scale"];
+  [pref setFloat:origin.x forKey:@"originX"];
+  [pref setFloat:origin.y forKey:@"originY"];
+  [pref synchronize];
+}
+
 
 - (void)drawRect:(CGRect)rect
 {
