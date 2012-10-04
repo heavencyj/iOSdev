@@ -12,10 +12,13 @@
 
 @interface TopPlacesTableViewController ()
 @property NSArray *topPlaces;
+@property NSArray *countries;
+@property NSArray *countryNames;
 @end
 
 @implementation TopPlacesTableViewController
 @synthesize topPlaces = _topPlaces;
+@synthesize countries = _countries;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -30,7 +33,7 @@
 {
   [super viewDidLoad];
   self.topPlaces = [FlickrFetcher topPlaces];
-  NSLog(@"content of array is %@", self.topPlaces);
+  //NSLog(@"content of array is %@", self.topPlaces);
   NSSortDescriptor *placeDescriptor =
   [[NSSortDescriptor alloc] initWithKey:FLICKR_PLACE_NAME
                               ascending:YES
@@ -38,8 +41,31 @@
   NSArray *descriptors = [NSArray arrayWithObjects:placeDescriptor, nil];
   self.topPlaces = [self.topPlaces sortedArrayUsingDescriptors:descriptors];
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
+  NSMutableDictionary *countries = [NSMutableDictionary dictionary];
+  for (NSDictionary *place in self.topPlaces) {
+    NSString *locationString = [place valueForKey:FLICKR_PLACE_NAME];
+    NSArray *location = [locationString componentsSeparatedByString:@", "];
+    if (location.count == 3) {
+      NSMutableArray *placesInCountry = [countries objectForKey:[location objectAtIndex:2]];
+      if (placesInCountry) [placesInCountry addObject:locationString];
+      else
+        placesInCountry = [NSMutableArray arrayWithObject:locationString];
+      [countries setObject:placesInCountry forKey:[location objectAtIndex:2]];
+    }
+    else if (location.count ==2){
+      NSMutableArray *placesInCountry = [countries objectForKey:[location objectAtIndex:1]];
+      if (placesInCountry) [placesInCountry addObject:locationString];
+      else 
+        placesInCountry = [NSMutableArray arrayWithObject:locationString];
+      [countries setObject:placesInCountry forKey:[location objectAtIndex:1]];
+    }
+  }
+  //NSLog(@"content of array is %@",  countries);
+  self.countries = [countries allValues];
+  NSLog(@"content of array is %@", self.countries);
+
+  
+  
 }
 
 - (void)viewDidUnload
@@ -59,21 +85,20 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return 1;
+    return self.countries.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
   // Return the number of rows in the section.
-  return self.topPlaces.count;
-  //return 20;
+  return [[self.countries objectAtIndex:section] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
   static NSString *CellIdentifier = @"topPlaces";
   UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-  NSString *title = [[self.topPlaces objectAtIndex:indexPath.row] valueForKey:FLICKR_PLACE_NAME];
+  NSString *title = [[self.countries objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
   NSArray *location = [title componentsSeparatedByString:@", "];
   cell.textLabel.text = [location objectAtIndex:0];
   if (location.count == 3) {
